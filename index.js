@@ -22,6 +22,7 @@ class BitCometApi {
         ADD_BT_TASK: "/api/task/bt/add",
         GET_TASK_SUMMARY: "/api/task/summary/get",
         GET_TASK_FILES: "/api/task/files/get",
+        SELECT_TASK_FILES: "/api/task/files/select",
         GET_TASK_TRACKERS: "/api/task/trackers/get",
         GET_TASK_SERVERS: "/api/task/servers/get",
         GET_TASK_CONNECTIONS: "/api/task/connections/get",
@@ -181,6 +182,29 @@ class BitCometApi {
             body: JSON.stringify(json)
         });
 
+        if (response.status !== 200) {
+            console.error('Get task list failed with status:', response.status);
+            return;
+        }
+        const data = await response.json();
+        if (data.error_code !== 'OK') {
+            console.error('Get task list error:', data);
+            return;
+        }
+        return data;
+    }
+
+    async selectTaskFile(task_id, file_selection) {
+        const response = await fetch(this.params.base_url + this.endpoints.SELECT_TASK_FILES, {
+            method: 'POST',
+            headers: {
+                ...this.params.headers,
+            },
+            body: JSON.stringify({
+                task_id,
+                file_selection
+            })
+        });
         if (response.status !== 200) {
             console.error('Get task list failed with status:', response.status);
             return;
