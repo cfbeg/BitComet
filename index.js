@@ -137,34 +137,40 @@ class BitCometApi {
         return data;
     }
 
+    async post(endpoint, json) {
+        try {
+            const response = await fetch(this.params.base_url + endpoint, {
+                method: 'POST',
+                headers: {
+                    ...this.params.headers,
+                },
+                body: JSON.stringify(json)
+            });
+            if (response.status !== 200) {
+                throw new Error(`Post request failed with status: ${response.status}`);
+            }
+            const data = await response.json();
+            if (data.error_code !== 'OK') {
+                throw new Error(`Post request error: ${JSON.stringify(data)}`);
+            }
+            return data;
+        } catch (error) {
+            console.error('Error occurred during post request:', error);
+        }
+    }
+
     async removeDevice(device_id) {
-        const response = await fetch(this.params.base_url + this.endpoints.BOUND_DEVICE_REMOVE, {
-            method: 'POST',
-            headers: {
-                ...this.params.headers,
-            },
-            body: JSON.stringify({
-                'device_id': device_id,
-            })
+        const response = await this.post(this.endpoints.BOUND_DEVICE_REMOVE, {
+            'device_id': device_id,
         });
 
-        if (response.status !== 200) {
-            console.error('Remove device failed with status:', response.status);
-            return;
-        }
-        const data = await response.json();
-        if (data.error_code !== 'OK') {
-            console.error('Remove device error:', data);
-            return;
-        }
-
-        for (let i = 0; i < data.bound_device_list.length; i++) {
-            if (data.bound_device_list[i].id === device_id) {
-                console.error('Device removal failed, device still exists:', data.bound_device_list[i]);
+        for (let i = 0; i < response.bound_device_list.length; i++) {
+            if (response.bound_device_list[i].id === device_id) {
+                console.error('Device removal failed, device still exists:', response.bound_device_list[i]);
                 return;
             }
         }
-        return data;
+        return response;
     }
 
     async removeThisDevice() {
@@ -174,47 +180,16 @@ class BitCometApi {
     }
 
     async getTaskList(json) {
-        const response = await fetch(this.params.base_url + this.endpoints.GET_TASK_LIST, {
-            method: 'POST',
-            headers: {
-                ...this.params.headers,
-            },
-            body: JSON.stringify(json)
-        });
-
-        if (response.status !== 200) {
-            console.error('Get task list failed with status:', response.status);
-            return;
-        }
-        const data = await response.json();
-        if (data.error_code !== 'OK') {
-            console.error('Get task list error:', data);
-            return;
-        }
-        return data;
+        const response = await this.post(this.endpoints.GET_TASK_LIST, json);
+        return response;
     }
 
     async selectTaskFile(task_id, file_selection) {
-        const response = await fetch(this.params.base_url + this.endpoints.SELECT_TASK_FILES, {
-            method: 'POST',
-            headers: {
-                ...this.params.headers,
-            },
-            body: JSON.stringify({
-                task_id,
-                file_selection
-            })
+        const response = await this.post(this.endpoints.SELECT_TASK_FILES, {
+            task_id,
+            file_selection
         });
-        if (response.status !== 200) {
-            console.error('Get task list failed with status:', response.status);
-            return;
-        }
-        const data = await response.json();
-        if (data.error_code !== 'OK') {
-            console.error('Get task list error:', data);
-            return;
-        }
-        return data;
+        return response;
     }
 }
 
