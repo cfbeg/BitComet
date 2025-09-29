@@ -3,7 +3,7 @@ name: パッケージを公開
 on:
   push:
     tags:
-      - 'api-*.*.*'
+      - 'v*.*.*'
 
 jobs:
     publish:
