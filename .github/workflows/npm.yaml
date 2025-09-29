@@ -3,20 +3,20 @@ name: パッケージを公開
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
-    publish:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v5
-            - name: Setup Bun
-              uses: oven-sh/setup-bun@v1
-            - run: bun install
-            - name: Publish to npm
-              env:
-                NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-              run: bun publish --access public
-            - name: Release
-              uses: softprops/action-gh-release@v2
-              if: github.ref_type == 'tag'
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+      - run: bun install
+      - name: Publish to npm
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: bun publish --access public
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
