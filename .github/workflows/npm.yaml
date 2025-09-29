@@ -16,4 +16,6 @@ jobs:
             - name: Publish to npm
               env:
                 NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-              run: bun publish -p --access public
+              run: |
+                echo "//registry.npmjs.org/:_authToken=${NPM_CONFIG_TOKEN}" > ~/.npmrc
+                bun publish --access public
