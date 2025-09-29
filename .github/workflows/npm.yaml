@@ -17,3 +17,6 @@ jobs:
               env:
                 NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
               run: bun publish --access public
+            - name: Release
+              uses: softprops/action-gh-release@v2
+              if: github.ref_type == 'tag'
