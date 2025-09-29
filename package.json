@@ -1,0 +1,6 @@
+{
+  "name": "bitcomet-api",
+  "module": "index.js",
+  "version": "1.0.0",
+  "type": "module"
+}

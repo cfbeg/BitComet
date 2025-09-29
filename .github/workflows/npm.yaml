@@ -1,0 +1,19 @@
+name: パッケージを公開
+
+on:
+  push:
+    tags:
+      - 'api-*.*.*'
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
+            - run: bun install
+            - name: Publish to npm
+              env:
+                NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+              run: bun publish -p --access public
